@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Credits{% endblock %}
+
+{% block body %}
+    <h1>Create new Credits</h1>
+
+    {{ include('admin/credits/_form.html.twig') }}
+
+    <a href="{{ path('app_admin_credits_index') }}">back to list</a>
+{% endblock %}

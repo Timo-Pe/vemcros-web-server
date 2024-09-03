@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Alerts index{% endblock %}
+
+{% block body %}
+    <h1>Alerts index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Alert_date</th>
+                <th>Alert_type</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for alert in alerts %}
+            <tr>
+                <td>{{ alert.id }}</td>
+                <td>{{ alert.alertDate ? alert.alertDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ alert.alertType }}</td>
+                <td>{{ alert.status }}</td>
+                <td>
+                    <a href="{{ path('app_admin_alerts_show', {'id': alert.id}) }}">show</a>
+                    <a href="{{ path('app_admin_alerts_edit', {'id': alert.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_alerts_new') }}">Create new</a>
+{% endblock %}

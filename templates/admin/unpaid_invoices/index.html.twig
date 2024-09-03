@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UnpaidInvoices index{% endblock %}
+
+{% block body %}
+    <h1>UnpaidInvoices index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Due_date</th>
+                <th>Unpaid_amount</th>
+                <th>Alert_date</th>
+                <th>Alert_sent</th>
+                <th>Interest_amount</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for unpaid_invoice in unpaid_invoices %}
+            <tr>
+                <td>{{ unpaid_invoice.id }}</td>
+                <td>{{ unpaid_invoice.dueDate ? unpaid_invoice.dueDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ unpaid_invoice.unpaidAmount }}</td>
+                <td>{{ unpaid_invoice.alertDate ? unpaid_invoice.alertDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ unpaid_invoice.alertSent ? 'Yes' : 'No' }}</td>
+                <td>{{ unpaid_invoice.interestAmount }}</td>
+                <td>
+                    <a href="{{ path('app_admin_unpaid_invoices_show', {'id': unpaid_invoice.id}) }}">show</a>
+                    <a href="{{ path('app_admin_unpaid_invoices_edit', {'id': unpaid_invoice.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_unpaid_invoices_new') }}">Create new</a>
+{% endblock %}
