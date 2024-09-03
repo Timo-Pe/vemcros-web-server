@@ -1,5 +1,5 @@
 const Encore = require('@symfony/webpack-encore');
-
+const path = require('path');
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -60,6 +60,36 @@ Encore
 
     // enables Sass/SCSS support
     //.enableSassLoader()
+
+      // Configuration du Dev Server
+  .configureDevServerOptions(options => {
+    options.hot = true; // Active le hot reload
+    options.liveReload = true; // Active le live reload
+    options.watchFiles = {
+        paths: ['templates/**/*', 'assets/**/*.js', 'assets/**/*.jsx'],
+        options: {
+            usePolling: true, // Ajoutez cette ligne si vous rencontrez des problèmes avec le système de fichiers
+        },
+    };
+    options.client = {
+        overlay: true, // Affiche les erreurs dans une superposition sur la page
+    };
+    
+    options.port = 8080; // Définir le port du Dev Server
+    options.static = {
+        directory: path.join(__dirname, 'public/'),
+    };
+    options.proxy = [
+        {
+            context: () => true,
+            target: 'http://localhost:8000', // Port de votre serveur Symfony/PHP
+            secure: false,
+            changeOrigin: true
+          
+        },
+    ];
+    options.allowedHosts = 'all';
+});
 
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
