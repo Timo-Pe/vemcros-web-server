@@ -5,7 +5,7 @@ import { ModalView } from "../class/ModalView";
 
 export default class extends Controller {
   connect() {
-    this.modalElement = document.getElementById("modal-view-invoice");
+    this.modalElement = document.getElementById("modal_view_invoice");
     this.initDatatableInvoice();
     this.modal = new ModalView(this.modalElement);
   }
@@ -18,11 +18,20 @@ export default class extends Controller {
       const dataTable = new DataTable("#filter-table", {
         perPage: 20,
         sortable: true,
-        searchable: false,
         tableRender: (_data, table, type) => {
           if (type === "print") {
             return table;
           }
+          //translate in french label
+          const dropdown = document.querySelector(".datatable-dropdown");
+          const select = dropdown.querySelector("select");
+          dropdown.innerHTML = "Entrées par page";
+          dropdown.prepend(select);
+
+          // Hide search bar
+          const searchBar = document.querySelector(".datatable-input");
+          searchBar.classList.add("hidden");
+
           const tHead = table.childNodes[0];
           const filterHeaders = {
             nodeName: "TR",
@@ -47,16 +56,12 @@ export default class extends Controller {
           return table;
         },
       });
-      const dropdown = document.querySelector(".datatable-dropdown");
-      const select = dropdown.querySelector("select");
-
-      dropdown.innerHTML = "Entrées par page";
-      dropdown.prepend(select);
     }
   }
 
   async openModalViewInvoice(event) {
     const idInvoice = event.currentTarget.dataset.idInvoice;
+    console.log(idInvoice);
     if (!idInvoice) {
       return;
     }
