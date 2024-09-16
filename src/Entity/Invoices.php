@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InvoicesRepository::class)]
 class Invoices
@@ -14,36 +15,46 @@ class Invoices
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["invoice"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(["invoice"])]
     private ?string $total_amount = null;
 
     #[ORM\Column]
+    #[Groups(["invoice"])]
     private ?\DateTimeImmutable $invoice_date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["invoice"])]
     private ?\DateTimeInterface $due_date = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
+    #[Groups(["invoice"])]
     private ?string $interest_rate = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(["invoice"])]
     private ?string $interest_amount = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(["invoice"])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
+    #[Groups(["invoice"])]
     private ?Clients $clients = null;
 
     #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: Payments::class)]
+    #[Groups(["invoice"])]
     private Collection $payments;
 
     #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: UnpaidInvoices::class)]
     private Collection $unpaid_invoice;
 
     #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: Alerts::class)]
+    #[Groups(["invoice"])]
     private Collection $alerts;
 
     public function __construct()

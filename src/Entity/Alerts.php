@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\AlertsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: AlertsRepository::class)]
 class Alerts
@@ -12,15 +13,19 @@ class Alerts
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["invoice"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["invoice"])]
     private ?\DateTimeInterface $alert_date = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(["invoice"])]
     private ?string $alert_type = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(["invoice"])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'alerts')]

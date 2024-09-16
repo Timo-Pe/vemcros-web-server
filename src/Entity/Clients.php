@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ClientsRepository::class)]
 class Clients
@@ -17,18 +18,23 @@ class Clients
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["invoice"])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(["invoice"])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["invoice"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Groups(["invoice"])]
     private ?string $phone = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(["invoice"])]
     private ?string $address = null;
 
     #[ORM\Column]

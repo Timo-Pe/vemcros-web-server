@@ -24,6 +24,8 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "flowbite": "^1.6.5"
+        "bootstrap-icons": "^1.11.3",
+        "flowbite": "^2.5.1",
+        "simple-datatables": "^9.1.0"
     }
 }

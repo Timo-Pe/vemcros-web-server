@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PaymentsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PaymentsRepository::class)]
 class Payments
@@ -12,15 +13,19 @@ class Payments
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["invoice"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(["invoice"])]
     private ?string $paid_amount = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["invoice"])]
     private ?\DateTimeInterface $payment_date = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(["invoice"])]
     private ?string $payment_method = null;
 
     #[ORM\ManyToOne(inversedBy: 'payments')]
