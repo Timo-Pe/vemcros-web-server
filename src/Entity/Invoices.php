@@ -57,6 +57,9 @@ class Invoices
     #[Groups(["admin_invoice"])]
     private Collection $alerts;
 
+    #[ORM\Column(length: 255)]
+    private ?string $reference = null;
+
     public function __construct()
     {
         $this->payments = new ArrayCollection();
@@ -239,6 +242,18 @@ class Invoices
                 $alert->setInvoices(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getReference(): ?string
+    {
+        return $this->reference;
+    }
+
+    public function setReference(string $reference): static
+    {
+        $this->reference = $reference;
 
         return $this;
     }
