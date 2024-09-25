@@ -1,10 +1,11 @@
 import { Modal } from "flowbite";
+import { MAX_DELAY_PAYMENT } from "../constantes";
 
 export class ModalView extends Modal {
-  constructor(modalDomElement) {
-    super(modalDomElement);
-    this.modalDOMElement = modalDomElement;
-    this.delaisPayment = 7;
+  constructor(modalElement) {
+    super(modalElement);
+    this._modalDOMElement = modalElement;
+    this._dataInView = [];
   }
 
   /**
@@ -29,53 +30,78 @@ export class ModalView extends Modal {
   }
 
   /**
-   * Set the data in the modal view
-   * @param {object} data - The data to set in the modal
-   * @param {string} entityName - The entity name (e.g. "invoice", "client")
-   * @param {HTMLElement} [parentNode=this.modalDOMElement] - The parent node of the fields
-   * @returns {HTMLElement} The parent node
+   * Fill the modal with data
+   * @param {Object} data - The data to fill the modal with
+   * @param {string} entityName - The name of the entity (invoices or payments)
+   * @param {HTMLElement} [parentNode=this.modalDOMElement] - The parent element of the modal
+   * @param {number} [indexInTemplate] - The index to use for the data-index attribute
+   * @returns {HTMLElement} The modified parent element
    */
-  setDataInModal(data, entityName, parentNode = this.modalDOMElement) {
+  setDataInModal(
+    data,
+    entityName,
+    parentNode = this.modalDOMElement,
+    indexInTemplate = null
+  ) {
+    // Sélectionne tous les champs pertinents
     const fieldsDOM = parentNode.querySelectorAll(
       ".modal_" + entityName + "_field"
     );
-    if (fieldsDOM) {
-      fieldsDOM.forEach((field) => {
+
+    fieldsDOM.forEach((field) => {
+      if (!field.hasAttribute("data-index")) {
         const fieldName = field.getAttribute("data-field");
+
         if (data[fieldName] !== undefined) {
-          if (fieldName.toLowerCase().includes("date")) {
-            field.innerHTML = this.convertToDate(data[fieldName]);
+          if (indexInTemplate) {
+            field.dataset.index = indexInTemplate;
+          }
+
+          if (field.dataset.opt) {
+            this.convertWithOptions(data[fieldName], field);
           } else {
             field.innerHTML = data[fieldName];
           }
         } else {
           field.innerHTML = "---";
         }
-      });
+      }
+    });
 
-      return parentNode;
-    } else {
-      return;
+    return parentNode;
+  }
+
+  /**
+   * Apply options to a field
+   * @param {*} data - The data to apply the option to
+   * @param {HTMLElement} field - The field to apply the option to
+   * @returns {HTMLElement} The field
+   */
+  convertWithOptions(data, field) {
+    const options = field.dataset.opt;
+
+    switch (options) {
+      case "convertToDate":
+        data = this.convertToDate(data);
+        field.innerHTML = data;
+        break;
+      case "idToField":
+        field.dataset.id = data;
+        field.innerHTML = data;
+        break;
+      default:
+        return field;
     }
   }
 
   /**
-   * Fill a table with data. The table must have the following structure
-   * <table id="modal_<entityName>_body">
-   *   <tbody>
-   *     <template id="tmpl_row_<entityName>">
-   *       <tr>
-   *         <td data-field="field1">field1</td>
-   *         <td data-field="field2">field2</td>
-   *       </tr>
-   *     </template>
-   *   </tbody>
-   * </table>
-   * The entityName must be the same as the one used in setDataInModal
-   * @param {Array<Object>} data - array of objects to display in the table
-   * @param {String} entityName - name of the entity
+   * Fill the sub-table with data
+   * @param {Array} data - The data to fill the table with
+   * @param {string} entityName - The name of the entity (invoices or payments)
+   * @returns {HTMLElement} The sub-table body
    */
   setDataInSubTable(data, entityName) {
+    // Sélectionner les éléments DOM nécessaires
     const bodyDOM = this.modalDOMElement.querySelector(
       "#modal_" + entityName + "_body"
     );
@@ -85,22 +111,28 @@ export class ModalView extends Modal {
     const nbModal = this.modalDOMElement.querySelector(
       ".modal_" + entityName + "_field[data-field='modal_nb']"
     );
+
+    bodyDOM.innerHTML = "";
     if (data && data.length > 0) {
-      for (const key of data) {
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < data.length; i++) {
         const rowDOM = tmplRowDOM.content.cloneNode(true);
-        const row = this.setDataInModal(key, entityName, rowDOM);
-
-        bodyDOM.appendChild(row);
+        const row = this.setDataInModal(data[i], entityName, rowDOM, i + 1);
+        fragment.appendChild(row);
       }
-      nbModal.innerHTML = data.length;
 
-      this.toggledAccordion(nbModal, false);
+      bodyDOM.appendChild(fragment);
+
+      if (nbModal) {
+        nbModal.innerHTML = data.length;
+      }
     } else {
-      nbModal.innerHTML = 0;
-      this.toggledAccordion(nbModal, true);
+      if (nbModal) {
+        nbModal.innerHTML = 0;
+      }
     }
   }
-
   /**
    * Toggle the accordion button
    * @param {HTMLElement} target - the target element
@@ -136,7 +168,7 @@ export class ModalView extends Modal {
 
     if (daysRemaining >= 0) {
       remainingDayDOM.textContent =
-        daysRemaining + " jours / " + this.delaisPayment + " jours";
+        daysRemaining + " jours / " + MAX_DELAY_PAYMENT + " jours";
       nextAlertDOM.textContent = "---";
     } else {
       const pastDueMilliseconds = Math.abs(remainingMilliseconds);
@@ -145,10 +177,29 @@ export class ModalView extends Modal {
       );
 
       const nextAlertInDays =
-        this.delaisPayment - (daysPastDue % this.delaisPayment);
+        MAX_DELAY_PAYMENT - (daysPastDue % MAX_DELAY_PAYMENT);
 
       remainingDayDOM.textContent = "Délais dépassé";
       nextAlertDOM.textContent = nextAlertInDays + " jours";
     }
+  }
+
+  get options() {
+    return this._options;
+  }
+  set options(options) {
+    this._options = options;
+  }
+  get modalDOMElement() {
+    return this._modalDOMElement;
+  }
+  set modalDOMElement(modalDOMElement) {
+    this._modalDOMElement = modalDOMElement;
+  }
+  get dataInView() {
+    return this._dataInView;
+  }
+  set dataInView(dataInView) {
+    this._dataInView = dataInView;
   }
 }

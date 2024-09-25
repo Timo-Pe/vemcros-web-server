@@ -43,7 +43,7 @@ class InvoicesController extends AbstractController
     #[Route('/{id}', name: 'app_admin_invoices_show', methods: ['GET'])]
     public function show(Invoices $invoice): Response
     {
-        return $this->json($invoice, 200, [], ['groups' => ['invoice']]);
+        return $this->json($invoice, 200, [], ['groups' => ['admin_invoice']]);
         // return $this->render('admin/invoices/show.html.twig', [
         //     'invoice' => $invoice,
         // ]);

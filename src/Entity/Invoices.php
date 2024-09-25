@@ -15,46 +15,46 @@ class Invoices
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $total_amount = null;
 
     #[ORM\Column]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?\DateTimeImmutable $invoice_date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?\DateTimeInterface $due_date = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $interest_rate = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $interest_amount = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?Clients $clients = null;
 
     #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: Payments::class)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private Collection $payments;
 
     #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: UnpaidInvoices::class)]
     private Collection $unpaid_invoice;
 
     #[ORM\OneToMany(mappedBy: 'invoices', targetEntity: Alerts::class)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private Collection $alerts;
 
     public function __construct()

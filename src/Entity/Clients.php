@@ -18,23 +18,23 @@ class Clients
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $email = null;
 
     #[ORM\Column(length: 20, nullable: true)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $phone = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $address = null;
 
     #[ORM\Column]
@@ -44,10 +44,16 @@ class Clients
     private Collection $accounts;
 
     #[ORM\OneToMany(mappedBy: 'clients', targetEntity: Invoices::class)]
+    #[Groups(["admin_client"])]
     private Collection $invoices;
 
     #[ORM\OneToMany(mappedBy: 'clients', targetEntity: Credits::class)]
     private Collection $credits;
+
+    /**
+     * @var float|null
+     */
+    private ?float $balanceAccounts = 0.0;
 
     public function __construct()
     {
@@ -219,6 +225,19 @@ class Clients
                 $credit->setClients(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getBalanceAccounts(): ?float
+    {
+        return $this->balanceAccounts;
+    }
+
+
+    public function setBalanceAccounts(?float $balance): self
+    {
+        $this->balanceAccounts = $balance;
 
         return $this;
     }

@@ -39,28 +39,51 @@ class ClientsRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Clients[] Returns an array of Clients objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
 
-//    public function findOneBySomeField($value): ?Clients
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function getClientsWithBalance(): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('c, COALESCE(SUM(a.balance), 0) as balance_accounts')
+            ->leftJoin('c.accounts', 'a')
+            ->groupBy('c.id');
+
+        $results = $qb->getQuery()->getResult();
+
+        $clientsList = [];
+
+        foreach ($results as $result) {
+            /** @var Client $client */
+            $client = $result[0];
+            $balance = $result['balance_accounts'];
+            $client->setBalanceAccounts((float) $balance);
+
+            $clientsList[] = $client;
+        }
+
+        return $clientsList;
+    }
+    //    /**
+    //     * @return Clients[] Returns an array of Clients objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('c.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?Clients
+    //    {
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
