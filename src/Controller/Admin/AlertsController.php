@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Alerts;
 use App\Form\AlertsType;
 use App\Repository\AlertsRepository;
+use App\Repository\ClientsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class AlertsController extends AbstractController
 {
     #[Route('/', name: 'app_admin_alerts_index', methods: ['GET'])]
-    public function index(AlertsRepository $alertsRepository): Response
+    public function index(AlertsRepository $alertsRepository, ClientsRepository $clientsRepository): Response
     {
+        // dd($clientsRepository->getAllAlertsWithClientInfos());
         return $this->render('admin/alerts/index.html.twig', [
-            'alerts' => $alertsRepository->findAll(),
+            'clients' => $clientsRepository->getAllAlertsWithClientInfos(),
         ]);
     }
 

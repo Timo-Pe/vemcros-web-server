@@ -61,7 +61,7 @@ export default class extends Controller {
 
   async openModalViewInvoice(event) {
     const idInvoice = event.currentTarget.dataset.idInvoice;
-    console.log(idInvoice);
+
     if (!idInvoice) {
       return;
     }

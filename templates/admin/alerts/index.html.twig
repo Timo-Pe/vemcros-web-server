@@ -1,39 +1,102 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Alerts index{% endblock %}
+{% block title %}Alerts index
+{% endblock %}
 
 {% block body %}
-    <h1>Alerts index</h1>
+	<h1>Alerts index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Alert_date</th>
-                <th>Alert_type</th>
-                <th>Status</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for alert in alerts %}
-            <tr>
-                <td>{{ alert.id }}</td>
-                <td>{{ alert.alertDate ? alert.alertDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ alert.alertType }}</td>
-                <td>{{ alert.status }}</td>
-                <td>
-                    <a href="{{ path('app_admin_alerts_show', {'id': alert.id}) }}">show</a>
-                    <a href="{{ path('app_admin_alerts_edit', {'id': alert.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 
-    <a href="{{ path('app_admin_alerts_new') }}">Create new</a>
+	<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+		<table id="table-clients" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+			<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+				<tr>
+					<th scope="col" class="px-6 py-3">
+						Coordonées
+					</th>
+					<th scope="col" class="px-6 py-3">
+						Nombres d'alertes
+					</th>
+					<th scope="col" class="px-6 py-3">
+						Date Derniere Alerte
+					</th>
+					<th scope="col" class="px-6 py-3">
+						Status
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for client in clients %}
+					<tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+						<th scope="row" class="group flex justify-between items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+							<div class="ps-3">
+								<div class="text-base font-semibold">
+									{{client.lastname }}
+									{{ client.firstname }}</div>
+								<div class="font-normal text-gray-500">{{client.email }}</div>
+							</div>
+							<div class=" flex gap-2 ">
+								<a data-action="click->client#openModalViewClient" data-id-client="{{client.id}}" class="btn-details-client transform translate-y-4 opacity-0 duration-300 delay-150 ease-out group-hover:translate-y-0 transition-all group-hover:opacity-100 cursor-pointer flex w-7 h-7 items-center justify-center text-gray-600 rounded-md p-1 border border-zinc-400 hover:shadow hover:bg-zinc-50">
+									<i class="bi bi-three-dots text-xl"></i>
+								</a>
+							</div>
+						</th>
+						<td
+							class="px-6 py-4">{# {{ client.invoices.alerts|length }} #}
+						</td>
+						<td class="px-6 py-4">
+							{{ client.balanceAccounts }}
+							<span>€</span>
+						</td>
+						<td class="px-6 py-4">
+							<div class="flex items-center">
+								<div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div>
+								Online
+							</div>
+						</td>
+					</tr>
+				{% else %}
+					<tr class="bg-white border-b w-full p-4 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+						<div class="w-full">Aucun client<div>
+							{% endfor %}
+						</tr>
+					</tr>
+				</tbody>
+			</tbody>
+		</table>
+	</div>
+
+
+	{# <table class="table">
+															<thead>
+																<tr>
+																	<th>Id</th>
+																	<th>Alert_date</th>
+																	<th>Alert_type</th>
+																	<th>Status</th>
+																	<th>actions</th>
+																</tr>
+															</thead>
+															<tbody>
+																{% for alert in alerts %}
+																	<tr>
+																		<td>{{ alert.id }}</td>
+																		<td>{{ alert.alertDate ? alert.alertDate|date('Y-m-d H:i:s') : '' }}</td>
+																		<td>{{ alert.alertType }}</td>
+																		<td>{{ alert.status }}</td>
+																		<td>
+																			<a href="{{ path('app_admin_alerts_show', {'id': alert.id}) }}">show</a>
+																			<a href="{{ path('app_admin_alerts_edit', {'id': alert.id}) }}">edit</a>
+																		</td>
+																	</tr>
+																{% else %}
+																	<tr>
+																		<td colspan="5">no records found</td>
+																	</tr>
+																{% endfor %}
+															</tbody>
+														</table> #}
+
+	<a href="{{ path('app_admin_alerts_new') }}">Create new</a>
 {% endblock %}

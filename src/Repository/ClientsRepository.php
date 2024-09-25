@@ -39,6 +39,16 @@ class ClientsRepository extends ServiceEntityRepository
         }
     }
 
+    public function getAllAlertsWithClientInfos(): array
+    {
+        return $this->createQueryBuilder('clients')
+            ->select('clients, invoices, alerts') // Sélectionne les clients et factures, et compte le nombre d'alertes
+            ->join('clients.invoices', 'invoices') // Jointure entre clients et invoices
+            ->join('invoices.alerts', 'alerts') // Jointure entre invoices et alerts
+            ->getQuery()
+            ->getResult();
+    }
+
 
     public function getClientsWithBalance(): array
     {
