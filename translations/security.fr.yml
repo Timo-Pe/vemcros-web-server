@@ -1,0 +1,12 @@
+# translations/security.fr.yaml
+
+# Erreurs d'authentification standard
+Invalid credentials.: "Identifiants incorrects."
+Account is disabled.: "Votre compte est désactivé."
+Account is locked.: "Votre compte est verrouillé."
+Username could not be found.: "Le nom d'utilisateur n'a pas été trouvé."
+Bad credentials.: "Identifiants invalides."
+
+# Autres messages de sécurité
+Too many failed login attempts, please try again later.: "Trop de tentatives de connexion échouées, veuillez réessayer plus tard."
+Invalid CSRF token.: "Jeton CSRF invalide."

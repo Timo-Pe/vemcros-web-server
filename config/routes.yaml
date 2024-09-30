@@ -1,9 +1,13 @@
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+  resource:
+    path: ../src/Controller/
+    namespace: App\Controller
+  type: attribute
 
 index:
-    path: /
-    controller: App\Controller\DefaultController::index
+  path: /
+  controller: App\Controller\DefaultController::index
+
+oauth_check:
+  path: /oauth/check/{service}
+  controller: Symfony\Bundle\SecurityBundle\Controller\TemplateController

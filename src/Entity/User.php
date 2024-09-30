@@ -31,6 +31,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $github_id = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $google_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,5 +110,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getGithubId(): ?string
+    {
+        return $this->github_id;
+    }
+
+    public function setGithubId(?string $github_id): static
+    {
+        $this->github_id = $github_id;
+
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->google_id;
+    }
+
+    public function setGoogleId(?string $google_id): static
+    {
+        $this->google_id = $google_id;
+
+        return $this;
     }
 }
