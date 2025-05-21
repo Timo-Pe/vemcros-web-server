@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Accounts;
 use App\Entity\Clients;
 use App\Entity\Invoices;
+use App\Repository\InvoicesRepository;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -13,11 +14,22 @@ use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
+
+    private InvoicesRepository $invoicesRepository;
+
+    public function __construct(InvoicesRepository $invoicesRepository)
+    {
+        $this->invoicesRepository = $invoicesRepository;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
 
+        $existingInvoiceCount = $this->invoicesRepository->count([]);
+        $invoiceCount = $existingInvoiceCount + 1; // démarrage après les factures existantes
+
         $clients = [];
+
         for ($i = 0; $i < 20; $i++) {
             $clients[$i] = new Clients();
             $clients[$i]
@@ -49,16 +61,23 @@ class AppFixtures extends Fixture
                 $random_date = new DateTime();
                 $random_date->setTimestamp($random_timestamp);
 
+                $invoiceDate = new DateTimeImmutable('now');
+                $year = $invoiceDate->format('Y');
+                $formattedCount = str_pad($invoiceCount, 3, '0', STR_PAD_LEFT);
+                $reference = 'FA-' . $year . '-' . $formattedCount;
+
                 $invoice
                     ->setClients($clients[$i])
                     ->setTotalAmount($random_invoice_amount)
-                    ->setInvoiceDate(new DateTimeImmutable('now'))
+                    ->setInvoiceDate($invoiceDate)
                     ->setDueDate($random_date)
                     ->setInterestRate(10)
                     ->setInterestAmount($random_invoice_amount * 0.10)
-                    ->setStatus('unpaid');
+                    ->setStatus('unpaid')
+                    ->setReference($reference);
 
                 $manager->persist($invoice);
+                $invoiceCount++;
             }
         }
 

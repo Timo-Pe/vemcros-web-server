@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 import { DataTable } from "simple-datatables";
 import { ModalView } from "../class/ModalView";
 import { getShowClient } from "../Services/ClientService";
+import { INVOICE_STATUS } from "../constantes";
 
 export default class extends Controller {
   connect() {
@@ -23,6 +24,7 @@ export default class extends Controller {
             return table;
           }
           const tHead = table.childNodes[0];
+
           const filterHeaders = {
             nodeName: "TR",
             attributes: {
@@ -83,9 +85,23 @@ export default class extends Controller {
     const detailsInvoice = this.modal.dataInView.invoices.find(
       (invoice) => invoice.id == idInvoice
     );
+    if (!detailsInvoice.status) {
+      return;
+    }
 
-    if (detailsInvoice) {
-      this.modal.setDataInModal(detailsInvoice, "invoices");
+    const optionnalGroups = this.modal.getAllOptionnalGroups();
+
+    const remaining = optionnalGroups.find(
+      (group) => group.groupName === "remaining"
+    );
+    this.modal.setDataInModal(detailsInvoice, "invoices");
+    if (remaining && remaining.conditionalField === "status") {
+      if (detailsInvoice.status === INVOICE_STATUS.UNPAID) {
+        this.modal.setRemainingDays(detailsInvoice.due_date, "invoices");
+        this.modal.changeGroupVisibility(remaining.groupName, "show");
+      } else {
+        this.modal.changeGroupVisibility(remaining.groupName, "hide"); // TODO : Ajouter ici un message "Payé"
+      }
     }
 
     const DOMClient = document.getElementById("client_infos");

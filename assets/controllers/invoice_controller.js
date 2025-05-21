@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 import { DataTable } from "simple-datatables";
 import { getShowInvoice } from "../Services/InvoiceService";
 import { ModalView } from "../class/ModalView";
+import { INVOICE_STATUS } from "../constantes";
 
 export default class extends Controller {
   connect() {
@@ -70,16 +71,48 @@ export default class extends Controller {
 
       this.modal.setDataInModal(dataInvoice, "invoice");
       this.modal.setDataInModal(dataInvoice.clients, "clients");
-      this.modal.setOptionnalCalc(
-        dataInvoice.due_date,
-        dataInvoice.invoice_date
-      );
+
+      console.log(dataInvoice);
       this.modal.setDataInSubTable(dataInvoice.alerts, "alerts");
       this.modal.setDataInSubTable(dataInvoice.payments, "payments");
+
+      this.addRemainingDays(dataInvoice.status, dataInvoice.due_date);
+      this.changeBadgeStatusColor(dataInvoice.status);
 
       this.modal.show();
     } catch (error) {
       console.error("There was an error with the modal view service:", error);
+    }
+  }
+
+  addRemainingDays(status, due_date) {
+    const optionnalGroups = this.modal.getAllOptionnalGroups();
+
+    const remaining = optionnalGroups.find(
+      (group) => group.groupName === "remaining"
+    );
+
+    if (remaining && remaining.conditionalField === "status") {
+      if (status === INVOICE_STATUS.UNPAID) {
+        this.modal.setRemainingDays(due_date, "invoice");
+        this.modal.changeGroupVisibility(remaining.groupName, "show");
+      } else {
+        this.modal.changeGroupVisibility(remaining.groupName, "hide");
+      }
+    }
+  }
+
+  changeBadgeStatusColor(status) {
+    const invoiceStatus = this.modal.modalDOMElement.querySelector(
+      ".modal_invoice_field[data-field='status']"
+    );
+
+    if (status === INVOICE_STATUS.UNPAID) {
+      invoiceStatus.classList.add("bg-red-100", "text-red-800");
+      invoiceStatus.classList.remove("bg-green-100", "text-green-800");
+    } else {
+      invoiceStatus.classList.add("bg-green-100", "text-green-800");
+      invoiceStatus.classList.remove("bg-red-100", "text-red-800");
     }
   }
 }

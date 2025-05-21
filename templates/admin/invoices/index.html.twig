@@ -11,7 +11,7 @@
 					<tr>
 						<th>
 							<span class="flex items-center">
-								Id
+								Réference
 								<svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewbox="0 0 24 24">
 									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
 								</svg>
@@ -64,7 +64,7 @@
 						<tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
 							<th scope="row" class="group flex justify-between px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
 								<div>
-									{{invoice.id}}
+									{{invoice.reference}}
 								</div>
 								<div>
 									<a data-action="click->invoice#openModalViewInvoice" data-id-invoice="{{invoice.id}}" class="btn-details-client transform translate-y-4 opacity-0 duration-300 ease-out group-hover:translate-y-0 transition-all group-hover:opacity-100 cursor-pointer flex w-7 h-7 items-center justify-center text-gray-600 rounded-md p-1 border border-zinc-400 hover:shadow hover:bg-zinc-50">
@@ -78,8 +78,8 @@
 							<td class="px-6 py-4">
 								{{ invoice.interestAmount }}
 							</td>
-							<td class="px-6 py-4">
-								{{ invoice.status }}
+							<td class="px-6 py-4 flex justify-start">
+								{{ invoice.status|status_badge }}
 							</td>
 							<td class="px-6 py-4">
 								{{ invoice.invoiceDate ? invoice.invoiceDate|date('Y-m-d H:i:s') : '' }}

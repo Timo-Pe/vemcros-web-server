@@ -58,6 +58,7 @@ class Invoices
     private Collection $alerts;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["admin_invoice", "admin_client"])]
     private ?string $reference = null;
 
     public function __construct()
@@ -134,7 +135,11 @@ class Invoices
 
     public function getStatus(): ?string
     {
-        return $this->status;
+        return match ($this->status) {
+            'paid' => 'Payée',
+            'unpaid' => 'Non payée',
+            default => ucfirst($this->status),
+        };
     }
 
     public function setStatus(string $status): self

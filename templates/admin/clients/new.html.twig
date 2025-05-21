@@ -1,11 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Clients{% endblock %}
+{% block title %}Nouveau client
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Clients</h1>
+	<div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white w-full h-full px-4 py-8 ">
+		<div class="w-full flex justify-between items-center mb-5">
+			<h2 class=" text-2xl font-bold text-gray-900 dark:text-white">Créer un utilisateur</h2>
+			<div class="flex gap-5">
+				<a class="text-yellow-400 inline-flex items-center hover:text-white border border-yellow-400 hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-red-900" href="{{ path('app_admin_clients_index') }}">Retour à la liste</a>
+			</div>
 
-    {{ include('admin/clients/_form.html.twig') }}
-
-    <a href="{{ path('app_admin_clients_index') }}">back to list</a>
+		</div>
+		{{ include('admin/clients/_form.html.twig', {'button_label': 'Valider'}) }}
+	</div>
 {% endblock %}

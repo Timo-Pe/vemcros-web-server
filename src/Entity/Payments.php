@@ -13,19 +13,19 @@ class Payments
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?string $paid_amount = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?\DateTimeInterface $payment_date = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?string $payment_method = null;
 
     #[ORM\ManyToOne(inversedBy: 'payments')]

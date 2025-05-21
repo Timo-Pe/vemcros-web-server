@@ -47,7 +47,6 @@ export class ModalView extends Modal {
     const fieldsDOM = parentNode.querySelectorAll(
       ".modal_" + entityName + "_field"
     );
-
     fieldsDOM.forEach((field) => {
       if (!field.hasAttribute("data-index")) {
         const fieldName = field.getAttribute("data-field");
@@ -58,7 +57,7 @@ export class ModalView extends Modal {
           }
 
           if (field.dataset.opt) {
-            this.convertWithOptions(data[fieldName], field);
+            this.convertFieldWithOptions(data[fieldName], field);
           } else {
             field.innerHTML = data[fieldName];
           }
@@ -71,13 +70,40 @@ export class ModalView extends Modal {
     return parentNode;
   }
 
+  getAllOptionnalGroups() {
+    const groups = this._modalDOMElement.querySelectorAll(".optionnalGroup");
+
+    const groupsArray = Array.from(groups)
+      .map((group) => {
+        if (group.dataset.conditionalfield && group.dataset.groupname) {
+          return {
+            groupName: group.dataset.groupname,
+            conditionalField: group.dataset.conditionalfield,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    return groupsArray;
+  }
+
+  changeGroupVisibility(groupName, show) {
+    const group = this._modalDOMElement.querySelector(
+      ".optionnalGroup[data-groupname='" + groupName + "']"
+    );
+    show === "show"
+      ? group.classList.remove("hidden")
+      : group.classList.add("hidden");
+  }
+
   /**
    * Apply options to a field
    * @param {*} data - The data to apply the option to
    * @param {HTMLElement} field - The field to apply the option to
    * @returns {HTMLElement} The field
    */
-  convertWithOptions(data, field) {
+  convertFieldWithOptions(data, field) {
     const options = field.dataset.opt;
 
     switch (options) {
@@ -88,6 +114,41 @@ export class ModalView extends Modal {
       case "idToField":
         field.dataset.id = data;
         field.innerHTML = data;
+        break;
+      case "optionnalField":
+        const conditionalField = field.dataset.conditionalfield;
+        if (!conditionalField) {
+          // Retirer les champs optionnels
+        } else {
+          data = this.setOptionnalField(data, field, conditionalField);
+          field.innerHTML = data;
+        }
+        break;
+      default:
+        return field;
+    }
+  }
+
+  convertGroupWithOptions(data, field) {
+    const options = field.dataset.opt;
+
+    switch (options) {
+      case "convertToDate":
+        data = this.convertToDate(data);
+        field.innerHTML = data;
+        break;
+      case "idToField":
+        field.dataset.id = data;
+        field.innerHTML = data;
+        break;
+      case "optionnalField":
+        const conditionalField = field.dataset.conditionalfield;
+        if (!conditionalField) {
+          // Retirer les champs optionnels
+        } else {
+          data = this.setOptionnalField(data, field, conditionalField);
+          field.innerHTML = data;
+        }
         break;
       default:
         return field;
@@ -102,6 +163,7 @@ export class ModalView extends Modal {
    */
   setDataInSubTable(data, entityName) {
     // Sélectionner les éléments DOM nécessaires
+
     const bodyDOM = this.modalDOMElement.querySelector(
       "#modal_" + entityName + "_body"
     );
@@ -152,13 +214,13 @@ export class ModalView extends Modal {
     }
   }
 
-  setOptionnalCalc(due_date, send_at) {
+  setRemainingDays(due_date, entityName) {
     const remainingDayDOM = this.modalDOMElement.querySelector(
-      ".modal_invoice_field[data-field='remaining_days']"
+      ".modal_" + entityName + "_field[data-field='remaining_days']"
     );
 
     const nextAlertDOM = this.modalDOMElement.querySelector(
-      ".modal_invoice_field[data-field='next_alert']"
+      ".modal_" + entityName + "_field[data-field='next_alert']"
     );
 
     const remainingMilliseconds = new Date(due_date) - new Date();
@@ -167,8 +229,7 @@ export class ModalView extends Modal {
     );
 
     if (daysRemaining >= 0) {
-      remainingDayDOM.textContent =
-        daysRemaining + " jours / " + MAX_DELAY_PAYMENT + " jours";
+      remainingDayDOM.textContent = daysRemaining + " jours";
       nextAlertDOM.textContent = "---";
     } else {
       const pastDueMilliseconds = Math.abs(remainingMilliseconds);

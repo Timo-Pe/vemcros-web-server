@@ -3,7 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Clients;
+use DateTime;
+use Doctrine\DBAL\Types\DateTimeType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType as TypeDateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,7 +20,6 @@ class ClientsType extends AbstractType
             ->add('email')
             ->add('phone')
             ->add('address')
-            ->add('creation_date')
         ;
     }
 

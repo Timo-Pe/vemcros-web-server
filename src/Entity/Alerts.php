@@ -13,19 +13,19 @@ class Alerts
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?\DateTimeInterface $alert_date = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?string $alert_type = null;
 
     #[ORM\Column(length: 20)]
-    #[Groups(["invoice"])]
+    #[Groups(["admin_invoice"])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'alerts')]
